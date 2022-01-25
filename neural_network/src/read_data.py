@@ -1,3 +1,4 @@
+
 import pandas as pd
 
 class read_data:
@@ -7,5 +8,30 @@ class read_data:
 
     def get_dataframe(self):
 
-        data = pd.read_csv('data/wdbc.data', sep=",")
-        print(data)
+        df = pd.read_csv('data/wdbc.data', sep=",")
+        df = df.drop(df.columns[0], axis=1) # Dropping the first attribute (column)
+
+        # ------------ Normalisation ------------ 
+
+        # making a copy of the dataframe
+        df_scaled = df.copy()
+
+        for column_index in range(31):
+
+            if column_index != 0: # Skipping target output
+                # Normalising values between a range of 0 and 1
+                df_scaled[df_scaled.columns[column_index]] = (df_scaled[df_scaled.columns[column_index]] 
+                - df_scaled[df_scaled.columns[column_index]].min()) / (df_scaled[df_scaled.columns[column_index]].max() 
+                - df_scaled[df_scaled.columns[column_index]].min())
+        
+        
+        # ------------ Splitting Data ------------ 
+        x_train = df_scaled.sample(frac = 0.7) 
+        y_test = df_scaled.drop(x_train.index) # Drops 70% and are now left with 30% for testing
+        print("[X] Dropped First Attirbute \n[X] Normalised \n[X] 7:3 Split")
+        return x_train, y_test
+
+        
+        
+    
+     
