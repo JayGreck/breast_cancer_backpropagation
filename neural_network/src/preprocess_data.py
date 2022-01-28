@@ -1,7 +1,5 @@
-
 import pandas as pd
-
-class read_data:
+class Preprocess_Data:
 
     def __init__(self):
         pass
@@ -16,6 +14,11 @@ class read_data:
         # making a copy of the dataframe
         df_scaled = df.copy()
 
+        # ------------ Label Encoding ------------ 
+        df_scaled['M'] = df_scaled['M'].astype('category')
+        df_scaled['M'] = df_scaled['M'].cat.codes
+        
+
         for column_index in range(31):
 
             if column_index != 0: # Skipping target output
@@ -29,9 +32,5 @@ class read_data:
         x_train = df_scaled.sample(frac = 0.7) 
         y_test = df_scaled.drop(x_train.index) # Drops 70% and are now left with 30% for testing
         print("[X] Dropped First Attirbute \n[X] Normalised \n[X] 7:3 Split")
+        
         return x_train, y_test
-
-        
-        
-    
-     

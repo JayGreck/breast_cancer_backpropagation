@@ -1,23 +1,24 @@
 from random import random
+
+
 from activation import Activation
+import numpy as np
 
-class init_network:
-
-    def __init__(self):
-        pass
-
+class Dense_Layer:
     def __init__(self, n_inputs, n_neurons, n_outputs):
         self.n_inputs = n_inputs
         self.n_neurons = n_neurons
         self.n_outputs = n_outputs
-        neural_net = list()
+        #self.weights = 0.01 * np.random.randn(n_inputs, n_neurons) -- Potential initialisisation
+        self.neural_net = list()
+        self.learning_rate = 0.1
 
-        
+       
         hidden_layer = [{'weights':[random() for i in range(self.n_inputs + 1)]} for i in range(self.n_neurons)]
         output_layer = [{'weights':[random() for i in range(self.n_neurons + 1)]} for i in range(self.n_outputs)]
-        neural_net.append(hidden_layer)
-        neural_net.append(output_layer)
-        for layer in neural_net:
+        self.neural_net.append(hidden_layer)
+        self.neural_net.append(output_layer)
+        for layer in self.neural_net:
             print(layer)
         
     @classmethod # Allows to be used without instantiating the class (polymorphism)
@@ -31,10 +32,16 @@ class init_network:
                 new_inputs.append(neuron['output']) # inputs for next layer
             inputs = new_inputs
         return inputs
-
-
-
-
+    
+    # Method to update weights after the error backpropagation has been performed
+    def update_weights(self, layer):
+        for i in range(len(self.neural_net)):
+            neuronal_inputs = layer[:-1] # Excluding the output layer?
+            if i != 0:
+                for neuron in self.neural_net[i-1]:
+                    neuronal_inputs = [neuron['output']]
+            for neuron in self.neural_net[i]:
+                for z in range(len(neuronal_inputs)):
+                    neuron['weights'][z] -= np.multiply(self.learning_rate, neuron['error_signal'], neuronal_inputs[z])
+                neuron['weights'][-1] -= np.multiply(self.learning_rate, neuron['error_signal'])
             
-        
-   
