@@ -1,14 +1,16 @@
 
 import numpy as np
-
 import matplotlib.pyplot as plt
+from multiprocessing import Process
+
 
 class Train_Network:
 
     def __init__(self, inputs, targets, l_rate, epochs, neural_net):
         
-        MSE = []
-        epoch_list = []
+        # Lists used for plotting the MSE vs Epoch
+        self.MSE_list = MSE_list = []
+        self.epoch_list = epoch_list = []
         for i in range(epochs):
             sum_error = 0
 
@@ -18,13 +20,8 @@ class Train_Network:
                 
                 # Forward pass
                 output = neural_net.forward_pass(input)
-                #print(output)
                 
-                
-                #print("Output = " + str(output))
-                    
                 # Calculate error
-                #print("target" + str(target))
                 error = target - output
                     
 
@@ -38,18 +35,21 @@ class Train_Network:
                 
             epoch_error = sum_error / len(inputs)
             
-            MSE.append(epoch_error)
-            epoch_list.append(i)
-            # display error at end of an epoch
+            self.MSE_list.append(epoch_error)
+            self.epoch_list.append(i)
+            # Displays error at end of an epoch
             print("At Epoch: {}  MSE = {}".format(i, epoch_error))
         
-        plt.plot(epoch_list, MSE)
+       
+        
+        
+    def mean_squared_error(self, target, output):
+        return np.average((target - output)**2)
+    
+    def network_training_curve(self):
+        plt.plot(self.epoch_list, self.MSE_list)
         plt.xlabel("Epoch")
         plt.ylabel("Mean Squared Error (MSE)")
         plt.title("MSE vs Epoch")
         plt.legend(['Training'])
         plt.show()
-
-
-    def mean_squared_error(self, target, output):
-        return np.average((target - output)**2)

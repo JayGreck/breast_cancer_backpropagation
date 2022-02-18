@@ -1,8 +1,7 @@
 import numpy as np
 from Activation import Activation
 from Backpropagation import Backpropagation
-import pandas as pd
-
+import matplotlib.pyplot as plt
 
 class Dense_Layer:
 
@@ -24,7 +23,7 @@ class Dense_Layer:
             bias = np.zeros(layers[i]) # 1-Dimensional array of the amt of zeroes equal to the amt neurons in network
             biases.append(bias)
         self.biases = biases
-        #print(self.biases)
+        
         
 
         # Generate weighted connections
@@ -34,7 +33,7 @@ class Dense_Layer:
             weight = np.random.rand(layers[i], layers[i + 1])
             weights.append(weight)
         self.weights = weights
-        #print(self.weights)
+        
 
         # Generating np array of zeroes for activations
         activations = list()
@@ -42,7 +41,7 @@ class Dense_Layer:
             init_activation_array = np.zeros(layers[i]) # 1-Dimensional array of the amt of zeroes equal to the amt neurons in network
             activations.append(init_activation_array)
         self.activations = activations # Equal to the amt of neurons in each layer
-        #print(self.activations)
+        
 
         # Generatign np array of zeroes for derivatives
         derivatives = list()
@@ -57,102 +56,46 @@ class Dense_Layer:
     # Calculates the forward pass of the neural net based on the input of previous layers
     def forward_pass(self, inputs):
        
-        activations = inputs
-        #print("Inputs" + str(inputs))
+        activations = inputs # Setting the activations as the inputs
+        
         try:
             activations = float(activations)
             self.activations[0] = float(activations)
         except:
             pass
         
-        #if type(activations) != str:
-            
-            
-                
-            #print(type(activations))
-            # Iterate through the network layers
-            for i, w in enumerate(self.weights):
+        # Iterate through the network layers
+        for i, w in enumerate(self.weights):
                 
                         
-                #print(self.biases[i][i])
-                # The dot product (input * weight) + bias
-                
-                dot_inputs = np.dot(activations, w) + self.biases[i][i]
-                #print("With Bias" + str(dot_inputs))
-                #without_bias = np.dot(activations, w)
-                #print("Without Bias" + str(without_bias))
+          
+            # The dot product (input * weight) + bias
+            dot_inputs = np.dot(activations, w) + self.biases[i][i]
 
-
-                            
-
-                # Activation function
-                activations = Activation.sigmoid_activation(dot_inputs) 
-                self.activations[i + 1] = activations 
-                #print(self.activations)
-
-            #print("Activations: " + str(activations))
-            return activations
-    
-   
-
-    # def mean_squared_error2(self, target, output):
-    #         return np.average((target - output)**2)
-    
-
-    def test(self, inputs, targets):
-        
-
-        activations = inputs
-        #print("Inputs" + str(inputs))
-        try:
-            activations = float(activations)
-            self.activations[0] = float(inputs)
-        except:
-            pass
-        
-        if type(activations) != str:
+            # Activation function
+            activations = Activation.sigmoid_activation(dot_inputs) 
             
-            
-            
-            #print(type(activations))
-            # Iterate through the network layers
-            for i, w in enumerate(self.weights):
-                        
-                
-                # The dot product (input * weight) + bias
-                dot_inputs = np.dot(activations, w) + self.biases[i][i]
-
-                            
-
-                # Activation function
-                activations = Activation.sigmoid_activation(dot_inputs)
-                self.activations[i + 1] = activations 
-                #print("kjsjskd: " + str(activations[i][i]))
+            # Storing activations at i+1 because activations are in the next layer for the multiplication to take place 
+            self.activations[i + 1] = activations 
                
-                
-
-            
-            return activations
+        return activations
 
 
-    def test2(self, inputs, targets, neural_net):
-        correct = 0
-        pred_list = []
+    def test_network(self, inputs, targets, neural_net):
+        pred_list = [] # List fo predictions
         true_positives = 0
         true_negatives = 0
         false_negatives = 0 # ppl who did have cancer but said they didn't
         false_positives = 0 # ppl who did not have cancer but said they did
         for i in range(1):
-            #sum_error = 0
+            
 
             for input, target in zip(inputs, targets):
 
                 
                 
                 # Forward pass
-                activations = neural_net.test(input, targets)
-                #print(output)
-                #print("Activations " + str(activations))
+                activations = neural_net.forward_pass(input)
 
                 
                 if activations[i] >= 0.5:
@@ -160,7 +103,7 @@ class Dense_Layer:
                 else:
                     pred = 0
                 
-                # Confusion Matrix
+                # For Confusion Matrix
                 if pred == 1 and target == 1:
                     true_positives += 1
                 elif pred == 0 and target == 0:
@@ -170,59 +113,30 @@ class Dense_Layer:
                 elif pred == 0 and target == 1:
                     false_negatives += 1
                 
-                if pred == target:
-                    correct += 1
+                
                 
                 
                 pred_list.append(pred)
-                #print("Correct = " + str(correct))
-        #print("Length: " + str(len(targets)))
         
-        #cm_predicted = pd.Series(pred_list, name="Predicted")
-        #cm_actual = pd.Series(targets, name="Actual")
-        #cm = pd.crosstab(cm_actual, cm_predicted, rownames=['Actual'], colnames=['Predicted'])
-        
-        #print(cm.values)
-        
-        # print("True Negatives = " + str(true_negatives))
-        # print("True Positives = " + str(true_positives))
-        # print("False Negatives = " + str(false_negatives))
-        # print("False Positives = " + str(false_positives))
-       
+        TN = true_negatives
+        FP = false_positives
+        FN = false_negatives
+        TP = true_positives
+        correct_instances = TP + TN
 
         print("\n")
         print("-------  CONFUSION MATRIX -------")
         print("0 = Benign")
         print("1 = Malignant")
-        # print(cm)
-        
-        
-
-        TN = true_negatives
-        FP = false_positives
-        FN = false_negatives
-        TP = true_positives
-
+        print("\n")
         print(str(TP) + " " + str(FP))
         print(str(FN) + " " + str(TN))
         print("\n")
 
-        
-        print("Test Accuracy: ", ((correct/len(targets))*100), '%')
-        print("Correctly Classified = " + str(correct))
+        print("Test Accuracy: ", ((correct_instances/len(targets))*100), '%')
+        print("Correctly Classified = " + str(correct_instances))
+        print("Incorrectly Classified = " + str(FP + FN))
         print("False Positive Rate: ", FP/(FP+TN))
         print("True Positive Rate: ", TP/(TP+FN))
                 
-                #print("Output = " + str(output))
-                    
-                # Calculate error
-                #print("target" + str(target))
-                #error = target - output
-                    
-
-                #neural_net.backpropagation_obj.backpropagate(error)
-
-                # Update weights (gradient descent)
-                #neural_net.backpropagation_obj.update_weights(l_rate)
-
-                #sum_error += self.mean_squared_error(target, output)
+   

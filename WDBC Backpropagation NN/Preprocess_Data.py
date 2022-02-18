@@ -9,7 +9,7 @@ class Preprocess_Data:
 
         
 
-        df = pd.read_csv('data/data.csv', sep=",")
+        df = pd.read_csv('data/wdbc.csv', sep=",")
         df = df.drop(df.columns[0], axis=1) # Dropping the first attribute (column)
         
         
@@ -27,9 +27,7 @@ class Preprocess_Data:
         df_scaled = df_scaled1.iloc[: , :-1]
         df_scaled = df_scaled.iloc[0: , :]
         
-        #print(df_scaled.head())
-        #print(df_scaled.tail())
-        #print(df_scaled.shape)
+        
         for column_index in range(30):
 
             if column_index != 0: # Skipping target output
@@ -38,7 +36,7 @@ class Preprocess_Data:
                 - df_scaled[df_scaled.columns[column_index]].min()) / (df_scaled[df_scaled.columns[column_index]].max() 
                 - df_scaled[df_scaled.columns[column_index]].min())
         
-        #print(df_scaled.dtypes)
+        
 
         
         # ------------ Splitting Data ------------ 
@@ -48,8 +46,7 @@ class Preprocess_Data:
         diagnosis_X = x_train70.loc[:, x_train70.columns.intersection(['diagnosis'])] # Gets the diagnosis 
         
         
-        # df_scaled = df.drop(df.columns[0], axis=1) #dropping classifier
-        # diagnosis_Y = df_scaled1.loc[:, df_scaled1.columns.intersection(['diagnosis'])] # Gets the diagnosis
+       
         
         y_train1 = df_scaled.drop(x_train70.index) # Drops 70% and are now left with 30% for testing
         dropped_classifier_y = y_train1.drop(y_train1.columns[0], axis=1) #dropping classifier
