@@ -1,17 +1,21 @@
 import numpy as np
 class Activation:
 
-    def __init__(self, inputs, weights):
-        self.weights = weights
-        self.inputs = inputs
-        self.activation = weights[-1] # Bias?
+    def __init__(self):
+        # self.weights = weights
+        # self.inputs = inputs
+        # self.activation = weights[-1] # Bias?
+        # self.sigmoid_activation_func = lambda x : np.exp(x) / (1 + np.exp(x))
+        pass
+    print("Inisde Activation Constructor")
             
-    def activate_neuron(self):
-        for i in range(len(self.weights)-1):
-            self.activation += np.dot(self.weight[1], self.inputs[i]) # self.inputs[i] * self.weights[i]
-        return self.activation
+    def activate_neuron(self, inputs, weights):
+        activation = weights[-1]
+        for i in range(len(weights)-1):
+            activation += inputs[i] * weights[i] # np.dot(weights[i], inputs[i])
+        return activation
 
-    def sigmoid_activation(self):
-        return 1.0 / (1.0 + np.exp(-self.activation))
+    def sigmoid_activation(self, activation):
+        return 1.0 / (1.0 + np.exp(-activation))
     
         
